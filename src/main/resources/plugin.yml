@@ -1,0 +1,20 @@
+name: ExtraBows
+version: 1.0
+author: ketty64
+main: me.ketty64.extrabows.Main
+description: A plugin that adds custom bows to Minecraft.
+api-version: 1.13
+commands:
+  extrabows:
+    description: "Displays plugin information."
+    usage: "/extrabows [icebow]"
+    aliases: [eb]
+    permission: extrabows.use
+    permission-message: "You do not have permission to use this command."
+permissions:
+  extrabows.use:
+    description: "Allows access to the /extrabows command."
+    default: op
+  extrabows.icebow:
+    description: "Allows players to receive an IceBow."
+    default: op
