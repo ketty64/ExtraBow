@@ -6,9 +6,11 @@ description: A plugin that adds custom bows to Minecraft.
 api-version: 1.13
 commands:
   extrabows:
-    description: "Displays plugin information."
-    usage: "/extrabows [icebow]"
-    aliases: [eb]
+    description: "Gives the player an extra bow."
+    usage: "/extrabows <bow>"
+    aliases:
+      - eb
+      - bow
     permission: extrabows.use
     permission-message: "You do not have permission to use this command."
 permissions:
@@ -17,4 +19,7 @@ permissions:
     default: op
   extrabows.icebow:
     description: "Allows players to receive an IceBow."
+    default: op
+  extrabows.lightningbow:
+    description: "Allows players to receive an LightningBow."
     default: op
