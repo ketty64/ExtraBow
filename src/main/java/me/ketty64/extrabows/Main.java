@@ -12,16 +12,24 @@ public class Main extends JavaPlugin implements CommandExecutor {
 
     private IceBow iceBow;
     private LightningBow lightningBow;
+    private ExplosiveBow explosiveBow;
+    private TeleportationBow teleportationBow;
 
     @Override
     public void onEnable() {
         getLogger().info("@ ExtraBows plugin enabled.");
         iceBow = new IceBow(this);
         lightningBow = new LightningBow(this);
+        explosiveBow = new ExplosiveBow(this);
+        teleportationBow = new TeleportationBow(this);
         getServer().getPluginManager().registerEvents(iceBow, this);
         getServer().getPluginManager().registerEvents(lightningBow, this);
+        getServer().getPluginManager().registerEvents(explosiveBow, this);
+        getServer().getPluginManager().registerEvents(teleportationBow, this);
 
-        // Registra il comando 'extrabows' con il plugin
+
+
+
         this.getCommand("extrabows").setExecutor(this);
     }
 
@@ -48,6 +56,14 @@ public class Main extends JavaPlugin implements CommandExecutor {
                     player.getInventory().addItem(lightningBow.getBow());
                     player.sendMessage("§bYou have received a §e§lLightningBow!");
                     return true;
+                } else if (commandArg.equals("explosivebow")) {
+                    player.getInventory().addItem(explosiveBow.getBow());
+                    player.sendMessage("§bYou have received a §c§lExplosivebow!");
+                    return true;
+                } else if (commandArg.equals("teleportationbow")) {
+                    player.getInventory().addItem(teleportationBow.getBow());
+                    player.sendMessage("§bYou have received a §5§lteleportationbow!");
+                    return true;
                 } else {
                     player.sendMessage("§3§lExtrabows: §cinvalid command!");
                     return true;
@@ -67,6 +83,9 @@ public class Main extends JavaPlugin implements CommandExecutor {
             if (args.length == 1) {
                 completions.add("icebow");
                 completions.add("lightningbow");
+                completions.add("explosivebow");
+                completions.add("teleportationbow");
+
             }
         }
         return completions;

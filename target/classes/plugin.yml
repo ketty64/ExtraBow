@@ -23,3 +23,9 @@ permissions:
   extrabows.lightningbow:
     description: "Allows players to receive an LightningBow."
     default: op
+  extrabows.explosivebow:
+    description: "Allows players to receive an ExplosiveBow."
+    default: op
+  extrabows.teleportationbow:
+    description: "Allows players to receive an TeleportationBow."
+    default: op
