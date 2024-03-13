@@ -30,7 +30,7 @@ public class TeleportationBow implements Listener {
         ItemMeta meta = bow.getItemMeta();
         meta.setDisplayName("§5§lTeleportationBow");
         List<String> lore = new ArrayList<>();
-        lore.add("This Bow teleports entities to a random location within 10 blocks on hit");
+        lore.add("This Bow teleports entities to a random location on hit");
         meta.setLore(lore);
         meta.addEnchant(Enchantment.DURABILITY, 10, true);
         bow.setItemMeta(meta);

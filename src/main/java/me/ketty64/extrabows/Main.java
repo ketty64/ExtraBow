@@ -14,6 +14,7 @@ public class Main extends JavaPlugin implements CommandExecutor {
     private LightningBow lightningBow;
     private ExplosiveBow explosiveBow;
     private TeleportationBow teleportationBow;
+    private GrapplingBow grapplingBow;
 
     @Override
     public void onEnable() {
@@ -22,13 +23,12 @@ public class Main extends JavaPlugin implements CommandExecutor {
         lightningBow = new LightningBow(this);
         explosiveBow = new ExplosiveBow(this);
         teleportationBow = new TeleportationBow(this);
+        grapplingBow = new GrapplingBow(this);
         getServer().getPluginManager().registerEvents(iceBow, this);
         getServer().getPluginManager().registerEvents(lightningBow, this);
         getServer().getPluginManager().registerEvents(explosiveBow, this);
         getServer().getPluginManager().registerEvents(teleportationBow, this);
-
-
-
+        getServer().getPluginManager().registerEvents(grapplingBow, this);
 
         this.getCommand("extrabows").setExecutor(this);
     }
@@ -62,7 +62,11 @@ public class Main extends JavaPlugin implements CommandExecutor {
                     return true;
                 } else if (commandArg.equals("teleportationbow")) {
                     player.getInventory().addItem(teleportationBow.getBow());
-                    player.sendMessage("§bYou have received a §5§lteleportationbow!");
+                    player.sendMessage("§bYou have received a §5§lTeleportationBow!");
+                    return true;
+                } else if (commandArg.equals("grappingbow")) {
+                    player.getInventory().addItem(grapplingBow.getBow());
+                    player.sendMessage("§bYou have received a §6§lGrapplinGbow!");
                     return true;
                 } else {
                     player.sendMessage("§3§lExtrabows: §cinvalid command!");
@@ -85,6 +89,7 @@ public class Main extends JavaPlugin implements CommandExecutor {
                 completions.add("lightningbow");
                 completions.add("explosivebow");
                 completions.add("teleportationbow");
+                completions.add("grappingbow");
 
             }
         }

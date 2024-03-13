@@ -29,3 +29,6 @@ permissions:
   extrabows.teleportationbow:
     description: "Allows players to receive an TeleportationBow."
     default: op
+  extrabows.grapplingbow:
+    description: "Allows players to receive an GrappingBow."
+    default: op
