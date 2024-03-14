@@ -1,0 +1,8 @@
+grappling-bow:
+  force: 3.0  # the drag force of the bow
+
+explosive-bow:
+  max-distance: 200  # max distance that the arrow can travel without despawn
+  explosion-radius: 4.0  # the radius of the explosion
+
+

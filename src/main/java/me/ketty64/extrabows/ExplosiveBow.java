@@ -17,10 +17,20 @@ import java.util.List;
 
 public class ExplosiveBow implements Listener {
     private final JavaPlugin plugin;
+    private float explosionRadius;
+    private int maxDistance;
 
     public ExplosiveBow(JavaPlugin plugin) {
         this.plugin = plugin;
+        reloadConfigValues();
+
     }
+
+    public void reloadConfigValues() {
+        explosionRadius = (float) plugin.getConfig().getDouble("explosive-bow.explosion-radius", 4.0);
+        maxDistance = plugin.getConfig().getInt("explosive-bow.max-distance", 200);
+    }
+
 
     public ItemStack getBow() {
         ItemStack bow = new ItemStack(Material.BOW);
@@ -44,14 +54,13 @@ public class ExplosiveBow implements Listener {
 
         Arrow arrow = (Arrow) event.getProjectile();
         arrow.setShooter(player);
-        arrow.setCritical(true); // Render the arrow as critical for visibility
+        arrow.setCritical(true);
         arrow.setPickupStatus(AbstractArrow.PickupStatus.ALLOWED);
-        new ExplosiveBowExplosion(arrow).runTaskTimer(plugin, 1, 1); // Start task immediately and run it every tick
+        new ExplosiveBowExplosion(arrow).runTaskTimer(plugin, 1, 1);
     }
 
-    private static class ExplosiveBowExplosion extends BukkitRunnable {
+    private class ExplosiveBowExplosion extends BukkitRunnable {
         private final Arrow arrow;
-        private static final int MAX_DISTANCE = 200; // Increase the maximum distance checked
         private int ticksLived = 0;
 
         public ExplosiveBowExplosion(Arrow arrow) {
@@ -60,21 +69,21 @@ public class ExplosiveBow implements Listener {
 
         @Override
         public void run() {
-            if (arrow.isDead() || ticksLived++ >= MAX_DISTANCE) {
+            if (arrow.isDead() || ticksLived++ >= maxDistance) {
                 this.cancel();
                 return;
             }
 
             if (arrow.isOnGround() || arrow.isInBlock()) {
-                arrow.getWorld().createExplosion(arrow.getLocation(), 4.0f); // Create an explosion at the arrow's location
+                arrow.getWorld().createExplosion(arrow.getLocation(), explosionRadius); // Create an explosion at the arrow's location
                 arrow.remove();
                 cancel();
                 return;
             }
 
-            for (Entity entity : arrow.getNearbyEntities(2, 2, 2)) { // Increase the size of entity search
+            for (Entity entity : arrow.getNearbyEntities(2, 2, 2)) {
                 if (entity instanceof LivingEntity && entity != arrow.getShooter()) {
-                    arrow.getWorld().createExplosion(arrow.getLocation(), 4.0f); // Create an explosion at the arrow's location
+                    arrow.getWorld().createExplosion(arrow.getLocation(), explosionRadius); // Create an explosion at the arrow's location
                     arrow.remove();
                     cancel();
                     return;
@@ -82,11 +91,10 @@ public class ExplosiveBow implements Listener {
             }
 
             // If the arrow has traveled an excessive distance without collisions, create an explosion anyway
-            if (ticksLived >= MAX_DISTANCE) {
-                arrow.getWorld().createExplosion(arrow.getLocation(), 4.0f); // Create an explosion at the arrow's location
+            if (ticksLived >= maxDistance) {
+                arrow.getWorld().createExplosion(arrow.getLocation(), explosionRadius); // Create an explosion at the arrow's location
                 arrow.remove();
                 cancel();
-                return;
             }
         }
     }

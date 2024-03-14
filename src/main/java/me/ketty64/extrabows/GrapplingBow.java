@@ -1,4 +1,5 @@
 package me.ketty64.extrabows;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -21,10 +22,19 @@ import java.util.List;
 public class GrapplingBow implements Listener {
     private final JavaPlugin plugin;
     private final List<Player> grapplingPlayers;
+    private double grapplingForce;
+
 
     public GrapplingBow(JavaPlugin plugin) {
         this.plugin = plugin;
+        reloadConfigValues();
         this.grapplingPlayers = new ArrayList<>();
+        this.grapplingForce = plugin.getConfig().getDouble("grappling-bow.force", 3.0);
+        this.grapplingForce = this.grapplingForce;
+    }
+
+    public void reloadConfigValues() {
+        grapplingForce = plugin.getConfig().getDouble("grappling-bow.force", 3.0);
     }
 
     public ItemStack getBow() {
@@ -73,7 +83,6 @@ public class GrapplingBow implements Listener {
         Player player = event.getPlayer();
         if (grapplingPlayers.contains(player)) {
             if (event.getTo().distanceSquared(event.getFrom()) < 0.01) {
-                // Player is not moving, remove from grapplingPlayers
                 grapplingPlayers.remove(player);
             }
         }
@@ -84,27 +93,23 @@ public class GrapplingBow implements Listener {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
             if (grapplingPlayers.contains(player) && event.getCause() == EntityDamageEvent.DamageCause.FALL) {
-                event.setCancelled(true); // Cancella il danno da caduta se il giocatore è trascinato dal GrapplingBow
+                event.setCancelled(true);
             }
         }
     }
 
     private void pullPlayerToLocation(Player player, Location targetLocation) {
-        grapplingPlayers.add(player); // Add player to grapplingPlayers list to track players being pulled
+        grapplingPlayers.add(player);
 
         Location playerLocation = player.getLocation();
         Vector direction = targetLocation.toVector().subtract(playerLocation.toVector()).normalize();
 
-        double force = 3.0; // Adjust force as needed
-
-        Vector velocity = direction.multiply(force);
-        velocity.setY(velocity.getY() * 0.5); // Reduce vertical pull
+        Vector velocity = direction.multiply(grapplingForce);
+        velocity.setY(velocity.getY() * 0.5);
         player.setVelocity(velocity);
 
-        // Disable fall damage temporarily
         player.setFallDistance(0);
 
-        // Disable movement temporarily when player is on the ground
         if (player.isOnGround()) {
             player.setAllowFlight(true);
             new BukkitRunnable() {
@@ -112,7 +117,7 @@ public class GrapplingBow implements Listener {
                 public void run() {
                     player.setAllowFlight(false);
                 }
-            }.runTaskLater(plugin, 5); // Re-enable movement after 5 ticks
+            }.runTaskLater(plugin, 5);
         }
     }
 }

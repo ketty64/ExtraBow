@@ -16,21 +16,40 @@ public class Main extends JavaPlugin implements CommandExecutor {
     private TeleportationBow teleportationBow;
     private GrapplingBow grapplingBow;
 
+
     @Override
     public void onEnable() {
         getLogger().info("@ ExtraBows plugin enabled.");
+        saveDefaultConfig();
+        getConfig().options().copyDefaults(true);
+        saveConfig();
+
+
+        float explosionRadius = (float) getConfig().getDouble("explosive-bow.explosion-radius", 4.0);
+        int maxDistance = getConfig().getInt("explosive-bow.max-distance", 200);
+        double grapplingForce = getConfig().getDouble("grappling-bow.force", 3.0);
+
         iceBow = new IceBow(this);
         lightningBow = new LightningBow(this);
         explosiveBow = new ExplosiveBow(this);
         teleportationBow = new TeleportationBow(this);
         grapplingBow = new GrapplingBow(this);
+
+
         getServer().getPluginManager().registerEvents(iceBow, this);
         getServer().getPluginManager().registerEvents(lightningBow, this);
         getServer().getPluginManager().registerEvents(explosiveBow, this);
         getServer().getPluginManager().registerEvents(teleportationBow, this);
         getServer().getPluginManager().registerEvents(grapplingBow, this);
 
+
         this.getCommand("extrabows").setExecutor(this);
+    }
+    @Override
+    public void onDisable(){
+        getLogger().info("@ ExtraBows plugin disabled.");
+        saveConfig();
+
     }
 
     @Override
@@ -64,11 +83,26 @@ public class Main extends JavaPlugin implements CommandExecutor {
                     player.getInventory().addItem(teleportationBow.getBow());
                     player.sendMessage("§bYou have received a §5§lTeleportationBow!");
                     return true;
-                } else if (commandArg.equals("grappingbow")) {
+                } else if (commandArg.equals("grapplingbow")) {
                     player.getInventory().addItem(grapplingBow.getBow());
-                    player.sendMessage("§bYou have received a §6§lGrapplinGbow!");
+                    player.sendMessage("§bYou have received a §6§lGrapplingbow!");
                     return true;
-                } else {
+                } else if (commandArg.equals("reload")) {
+                    if (player.hasPermission("extrabows.reload")) {
+                        reloadConfig();
+                        explosiveBow.reloadConfigValues();
+                        grapplingBow.reloadConfigValues();
+
+                        player.sendMessage("§fExtraBows file config reloaded.");
+                    } else {
+                        player.sendMessage("§cYou don't have permission to use this command.");
+                    }
+                    return true;
+
+
+
+
+            } else {
                     player.sendMessage("§3§lExtrabows: §cinvalid command!");
                     return true;
                 }
@@ -90,6 +124,8 @@ public class Main extends JavaPlugin implements CommandExecutor {
                 completions.add("explosivebow");
                 completions.add("teleportationbow");
                 completions.add("grappingbow");
+                completions.add("reload");
+
 
             }
         }
