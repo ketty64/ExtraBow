@@ -15,6 +15,7 @@ public class Main extends JavaPlugin implements CommandExecutor {
     private ExplosiveBow explosiveBow;
     private TeleportationBow teleportationBow;
     private GrapplingBow grapplingBow;
+    private HealingBow healingBow;
 
 
     @Override
@@ -28,12 +29,16 @@ public class Main extends JavaPlugin implements CommandExecutor {
         float explosionRadius = (float) getConfig().getDouble("explosive-bow.explosion-radius", 4.0);
         int maxDistance = getConfig().getInt("explosive-bow.max-distance", 200);
         double grapplingForce = getConfig().getDouble("grappling-bow.force", 3.0);
+        double teleportationRadius = getConfig().getDouble("teleportation-bow.teleportation-radius", 10.0);
+        double healAmount = getConfig().getDouble("healing-bow.heal-amount", 10);
+
 
         iceBow = new IceBow(this);
         lightningBow = new LightningBow(this);
         explosiveBow = new ExplosiveBow(this);
         teleportationBow = new TeleportationBow(this);
         grapplingBow = new GrapplingBow(this);
+        healingBow = new HealingBow(this);
 
 
         getServer().getPluginManager().registerEvents(iceBow, this);
@@ -41,6 +46,7 @@ public class Main extends JavaPlugin implements CommandExecutor {
         getServer().getPluginManager().registerEvents(explosiveBow, this);
         getServer().getPluginManager().registerEvents(teleportationBow, this);
         getServer().getPluginManager().registerEvents(grapplingBow, this);
+        getServer().getPluginManager().registerEvents(healingBow, this);
 
 
         this.getCommand("extrabows").setExecutor(this);
@@ -61,7 +67,8 @@ public class Main extends JavaPlugin implements CommandExecutor {
 
         Player player = (Player) sender;
 
-        if (cmd.getName().equalsIgnoreCase("extrabows")) {
+        String commandName = cmd.getName().toLowerCase();
+        if (commandName.equals("extrabows")) {
             if (args.length == 0) {
                 player.sendMessage("§bRunning §9§lExtraBows 1.0 §bby §9§lketty64");
                 return true;
@@ -87,26 +94,26 @@ public class Main extends JavaPlugin implements CommandExecutor {
                     player.getInventory().addItem(grapplingBow.getBow());
                     player.sendMessage("§bYou have received a §6§lGrapplingbow!");
                     return true;
+                } else if (commandArg.equals("healingbow")) {
+                    player.getInventory().addItem(healingBow.getBow());
+                    player.sendMessage("§bYou have received a §a§lHealingbow!");
+                    return true;
                 } else if (commandArg.equals("reload")) {
                     if (player.hasPermission("extrabows.reload")) {
                         reloadConfig();
                         explosiveBow.reloadConfigValues();
                         grapplingBow.reloadConfigValues();
+                        healingBow.reloadConfigValues();
 
                         player.sendMessage("§fExtraBows file config reloaded.");
                     } else {
                         player.sendMessage("§cYou don't have permission to use this command.");
                     }
                     return true;
-
-
-
-
-            } else {
-                    player.sendMessage("§3§lExtrabows: §cinvalid command!");
-                    return true;
                 }
             }
+            player.sendMessage("§3§lExtrabows: §cinvalid command!");
+            return true;
         }
         return false;
     }
@@ -114,7 +121,9 @@ public class Main extends JavaPlugin implements CommandExecutor {
 
 
 
-@Override
+
+
+    @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
         List<String> completions = new ArrayList<>();
         if (cmd.getName().equalsIgnoreCase("extrabows") || cmd.getName().equalsIgnoreCase("eb")) {
@@ -123,7 +132,8 @@ public class Main extends JavaPlugin implements CommandExecutor {
                 completions.add("lightningbow");
                 completions.add("explosivebow");
                 completions.add("teleportationbow");
-                completions.add("grappingbow");
+                completions.add("grapplingbow");
+                completions.add("healingbow");
                 completions.add("reload");
 
 

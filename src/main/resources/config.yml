@@ -1,8 +1,16 @@
 grappling-bow:
   force: 3.0  # the drag force of the bow
 
+
 explosive-bow:
   max-distance: 200  # max distance that the arrow can travel without despawn
   explosion-radius: 4.0  # the radius of the explosion
+
+
+teleportation-bow:
+  teleportation-radius: 10.0 # radius of blocks that entities can be teleported to when hit
+
+healing-bow:
+  heal-amount: 10.0 # how many hearts the bow cure
 
 

@@ -12,17 +12,25 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
+
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+
+
 public class TeleportationBow implements Listener {
     private final JavaPlugin plugin;
+    private double teleportationRadius;
 
     public TeleportationBow(JavaPlugin plugin) {
         this.plugin = plugin;
+        reloadConfigValues();
+    }
+
+    public void reloadConfigValues() {
+        teleportationRadius = plugin.getConfig().getDouble("teleportation-bow.teleportation-radius", 10.0);
     }
 
     public ItemStack getBow() {
@@ -47,7 +55,7 @@ public class TeleportationBow implements Listener {
 
         Arrow arrow = (Arrow) event.getProjectile();
         arrow.setShooter(player);
-        arrow.setCritical(true); // Render the arrow as critical for visibility
+        arrow.setCritical(true);
         arrow.setPickupStatus(Arrow.PickupStatus.ALLOWED);
     }
 
@@ -61,7 +69,7 @@ public class TeleportationBow implements Listener {
                         && shooter.getInventory().getItemInMainHand().getItemMeta().getDisplayName().equals("§5§lTeleportationBow")) {
                     World world = arrow.getWorld();
                     Location hitLocation = arrow.getLocation();
-                    for (Entity entity : world.getNearbyEntities(hitLocation, 2, 2, 2)) {
+                    for (Entity entity : world.getNearbyEntities(hitLocation, teleportationRadius, teleportationRadius, teleportationRadius)) {
                         if (entity instanceof LivingEntity && entity != shooter) {
                             ((LivingEntity) entity).damage(4.0); // Inflict damage to the entity
                             teleportEntityRandomly((LivingEntity) entity);
@@ -74,11 +82,15 @@ public class TeleportationBow implements Listener {
 
     private void teleportEntityRandomly(LivingEntity entity) {
         Location currentLocation = entity.getLocation();
-        Location teleportLocation = getRandomLocation(currentLocation, 10);
+        Location teleportLocation = getRandomLocation(currentLocation, teleportationRadius);
         if (teleportLocation != null) {
             entity.teleport(teleportLocation);
         }
     }
+
+
+
+
 
     private Location getRandomLocation(Location center, double radius) {
         Random rand = new Random();

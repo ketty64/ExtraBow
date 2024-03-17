@@ -32,6 +32,9 @@ permissions:
   extrabows.grapplingbow:
     description: "Allows players to receive an GrappingBow."
     default: op
+  extrabows.healingbow:
+    description: "Allows players to receive an HealingBow."
+    default: op
   extrabows.reload:
     description: "Allows players to reload the config file."
     default: op
